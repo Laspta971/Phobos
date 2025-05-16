@@ -12,6 +12,7 @@
 #include <New/Type/Affiliated/PassengerDeletionTypeClass.h>
 #include <New/Type/DigitalDisplayTypeClass.h>
 #include <New/Type/Affiliated/DroppodTypeClass.h>
+#include <New/Type/RealisticArmorType.h>
 
 class Matrix3D;
 
@@ -279,6 +280,17 @@ public:
 		Nullable<double> DirectionalArmor_BackMultiplier;
 		Nullable<double> DirectionalArmor_FrontField;
 		Nullable<double> DirectionalArmor_BackField;
+
+		//Extension of Direction Armor
+		Nullable<bool> RealisticArmor;
+		Nullable<RealisticArmorType*> RealisticArmor_FrontType;
+		Nullable<RealisticArmorType*> RealisticArmor_SideType;
+		Nullable<RealisticArmorType*> RealisticArmor_BackType;
+		Nullable<int> RealisticArmor_FrontValue;
+		Nullable<int> RealisticArmor_SideValue;
+		Nullable<int> RealisticArmor_BackValue;
+		Nullable<double> RealisticArmor_FrontField;
+		Nullable<double> RealisticArmor_BackField;
 
 		Valueable<int> Power;
 
@@ -581,6 +593,16 @@ public:
 			, DirectionalArmor_BackMultiplier {}
 			, DirectionalArmor_FrontField {}
 			, DirectionalArmor_BackField {}
+
+			, RealisticArmor {}
+			, RealisticArmor_FrontType {}
+			, RealisticArmor_SideType {}
+			, RealisticArmor_BackType {}
+			, RealisticArmor_FrontValue {}
+			, RealisticArmor_SideValue {}
+			, RealisticArmor_BackValue {}
+			, RealisticArmor_FrontField {}
+			, RealisticArmor_BackField {}
 
 			, Power { }
 

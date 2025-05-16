@@ -40,6 +40,54 @@ DEFINE_HOOK(0x701900, TechnoClass_ReceiveDamage_Shield, 0x6)
 		else
 			multiplier = pWHExt->DamageOwnerMultiplier.Get(pRules->DamageOwnerMultiplier);
 
+		if (pTypeExt->RealisticArmor && pThis->WhatAmI() == AbstractType::Unit && WarheadTypeExt::HitDirection >= 0 && args->DistanceToEpicenter <= 64 && pWHExt->RealisticArmor_Penetration >= 0.0)
+		{
+			const int tarFacing = pThis->PrimaryFacing.Current().GetValue<16>();
+			const int angle = abs(WarheadTypeExt::HitDirection - tarFacing);
+			const int frontField = static_cast<int>(16384 * pTypeExt->RealisticArmor_FrontField);
+			const int backField = static_cast<int>(16384 * pTypeExt->RealisticArmor_BackField);
+
+			int armorIndex;
+			double armorValue = 0;
+			double armorMultiplier = 1.0;
+			
+			if (angle >= 32768 - frontField && angle <= 32768 + frontField)
+			{
+				//查找装甲类型是否在弹头定义内
+				//如果存在，找到装甲对应的防御系数，否则取默认值1.0
+				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
+				{
+					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_FrontType);
+					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
+				}
+				//装甲值 = 纸面值 * 防御系数
+				armorValue = pTypeExt->RealisticArmor_FrontValue * armorMultiplier;
+			}
+			else if ((angle < backField && angle >= 0) || (angle > 49152 + backField && angle <= 65536))
+			{
+				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
+				{
+					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_BackType);
+					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
+				}
+				armorValue = pTypeExt->RealisticArmor_BackValue * armorMultiplier;
+			}
+			else
+			{
+				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
+				{
+					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_SideType);
+					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
+				}
+				armorValue = pTypeExt->RealisticArmor_SideValue * armorMultiplier;
+			}
+			if (pWHExt->RealisticArmor_Penetration < armorValue)
+			{
+				*args->Damage = 0;
+			}
+			GeneralUtils::DisplayArmorBlockString(*args->Damage, pThis->GetRenderCoords(), TechnoExt::ExtMap.Find(pThis)->DamageNumberOffset);
+		}
+
 		if (pTypeExt->DirectionalArmor.Get(RulesExt::Global()->DirectionalArmor) && pThis->WhatAmI() == AbstractType::Unit && WarheadTypeExt::HitDirection >= 0 && args->DistanceToEpicenter <= 64)
 		{
 			const int tarFacing = pThis->PrimaryFacing.Current().GetValue<16>();

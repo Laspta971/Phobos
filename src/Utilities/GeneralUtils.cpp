@@ -181,6 +181,30 @@ CoordStruct GeneralUtils::CalculateCoordsFromDistance(CoordStruct currentCoords,
 	return CoordStruct { x, y, targetCoords.Z };
 }
 
+void GeneralUtils::DisplayArmorBlockString(int damage, CoordStruct coords, int& offset)
+{
+
+	ColorStruct color;
+
+	color = damage > 0 ? ColorStruct { 255, 0, 0 } : ColorStruct { 0, 255, 0 };
+
+	int width = 0, height = 0;
+	wchar_t damageStr[0x20];
+	if (damage > 0)
+		swprintf_s(damageStr, L"%s", L"Penetrated");
+	else
+		swprintf_s(damageStr, L"%s", L"Blocked");
+
+	BitFont::Instance->GetTextDimension(damageStr, &width, &height, 120);
+
+	if (damage > 0)
+		FlyingStrings::Add(damageStr, coords, color, Point2D { -30, 0 });
+	else
+		FlyingStrings::Add(damageStr, coords, color, Point2D { -20, 0 });
+	
+
+}
+
 void GeneralUtils::DisplayDamageNumberString(int damage, DamageDisplayType type, CoordStruct coords, int& offset)
 {
 	if (damage == 0)

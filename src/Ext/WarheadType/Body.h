@@ -8,6 +8,7 @@
 #include <Ext/Bullet/Body.h>
 #include <Ext/Techno/Body.h>
 #include <New/Type/Affiliated/TypeConvertGroup.h>
+#include <New/Type/RealisticArmorType.h>
 
 class WarheadTypeExt
 {
@@ -175,6 +176,10 @@ public:
 		Valueable<AffectedTarget> KillWeapon_OnFirer_Affects;
 
     	Valueable<int> ElectricAssaultLevel;
+
+		Valueable<double> RealisticArmor_Penetration;
+		NullableVector<RealisticArmorType*> RealisticArmor_Types;
+		NullableVector<double> RealisticArmor_Mulitiper;
 
 		// Ares tags
 		// http://ares-developers.github.io/Ares-docs/new/warheads/general.html
@@ -370,6 +375,10 @@ public:
 			, KillWeapon_OnFirer_AffectsHouses { AffectedHouse::All }
 			, KillWeapon_Affects { AffectedTarget::All }
 			, KillWeapon_OnFirer_Affects { AffectedTarget::All }
+
+			,RealisticArmor_Penetration {-1.0}
+			,RealisticArmor_Types {}
+			,RealisticArmor_Mulitiper {}
 		{ }
 
 		void ApplyConvert(HouseClass* pHouse, TechnoClass* pTarget);

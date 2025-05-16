@@ -505,6 +505,16 @@ void TechnoTypeExt::ExtData::LoadFromINIFile(CCINIClass* const pINI)
 	this->DirectionalArmor_FrontField.Read(exINI, pSection, "DirectionalArmor.FrontField");
 	this->DirectionalArmor_BackField.Read(exINI, pSection, "DirectionalArmor.BackField");
 
+	this->RealisticArmor.Read(exINI, pSection, "RealisticArmor");
+	this->RealisticArmor_FrontType.Read(exINI, pSection, "RealisticArmor.FrontType");
+	this->RealisticArmor_SideType.Read(exINI, pSection, "RealisticArmor.SideType");
+	this->RealisticArmor_BackType.Read(exINI, pSection, "RealisticArmor.BackType");
+	this->RealisticArmor_FrontValue.Read(exINI, pSection, "RealisticArmor.FrontValue");
+	this->RealisticArmor_SideValue.Read(exINI, pSection, "RealisticArmor.SideValue");
+	this->RealisticArmor_BackValue.Read(exINI, pSection, "RealisticArmor.BackValue");
+	this->RealisticArmor_FrontField.Read(exINI, pSection, "RealisticArmor.FrontField");
+	this->RealisticArmor_BackField.Read(exINI, pSection, "RealisticArmor.BackField");
+
 	this->Power.Read(exINI, pSection, "Power");
 
 	this->Image_ConditionYellow.Read(exINI, pSection, "Image.ConditionYellow");
@@ -956,6 +966,16 @@ void TechnoTypeExt::ExtData::Serialize(T& Stm)
 		.Process(this->DirectionalArmor_BackMultiplier)
 		.Process(this->DirectionalArmor_FrontField)
 		.Process(this->DirectionalArmor_BackField)
+
+		.Process(this->RealisticArmor)
+		.Process(this->RealisticArmor_FrontType)
+		.Process(this->RealisticArmor_SideType)
+		.Process(this->RealisticArmor_BackType)
+		.Process(this->RealisticArmor_FrontValue)
+		.Process(this->RealisticArmor_SideValue)
+		.Process(this->RealisticArmor_BackValue)
+		.Process(this->RealisticArmor_FrontField)
+		.Process(this->RealisticArmor_BackField)
 
 		.Process(this->Power)
 

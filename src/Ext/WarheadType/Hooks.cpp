@@ -44,7 +44,7 @@ DEFINE_HOOK(0x469A69, BulletClass_Detonate_DamageArea, 0x6)
 
 	do
 	{
-		if (pWHExt->Directional)
+		if (pWHExt->Directional || pWHExt->RealisticArmor_Penetration >= 0.0)
 		{
 			if (pBullet->Type->Inviso)
 			{

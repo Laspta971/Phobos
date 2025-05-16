@@ -33,7 +33,7 @@
 #include <New/Type/RadTypeClass.h>
 #include <New/Type/LaserTrailTypeClass.h>
 #include <New/Type/DigitalDisplayTypeClass.h>
-
+#include<New/Type/RealisticArmorType.h>
 #include <utility>
 
 #pragma region Implementation details
@@ -231,7 +231,8 @@ using PhobosTypeRegistry = TypeRegistry <
 	DigitalDisplayTypeClass,
 	AttachEffectTypeClass,
 	AttachEffectClass,
-	NewSWType
+	NewSWType,
+	RealisticArmorType
 	// other classes
 > ;
 

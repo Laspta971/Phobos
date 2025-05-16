@@ -292,6 +292,11 @@ void WarheadTypeExt::ExtData::LoadFromINIFile(CCINIClass* const pINI)
 
   	this->ElectricAssaultLevel.Read(exINI, pSection, "ElectricAssaultLevel");
 
+	//Realistic Armors
+	this->RealisticArmor_Penetration.Read(exINI, pSection, "RealisticArmor.Penetration");
+	this->RealisticArmor_Types.Read(exINI, pSection, "RealisticArmor.Types");
+	this->RealisticArmor_Mulitiper.Read(exINI, pSection, "RealisticArmor.Mulitiper");
+
 	// Convert.From & Convert.To
 	TypeConvertGroup::Parse(this->Convert_Pairs, exINI, pSection, AffectedHouse::All);
 
@@ -555,6 +560,10 @@ void WarheadTypeExt::ExtData::Serialize(T& Stm)
 		.Process(this->PossibleCellSpreadDetonate)
 		.Process(this->Reflected)
 		.Process(this->DamageAreaTarget)
+
+		.Process(this->RealisticArmor_Penetration)
+		.Process(this->RealisticArmor_Types)
+		.Process(this->RealisticArmor_Mulitiper)
 		;
 }
 
