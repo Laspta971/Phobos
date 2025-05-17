@@ -282,15 +282,21 @@ public:
 		Nullable<double> DirectionalArmor_BackField;
 
 		//Extension of Direction Armor
+		//FSB = Front, Side, Back
 		Nullable<bool> RealisticArmor;
-		Nullable<RealisticArmorType*> RealisticArmor_FrontType;
-		Nullable<RealisticArmorType*> RealisticArmor_SideType;
-		Nullable<RealisticArmorType*> RealisticArmor_BackType;
-		Nullable<int> RealisticArmor_FrontValue;
-		Nullable<int> RealisticArmor_SideValue;
-		Nullable<int> RealisticArmor_BackValue;
-		Nullable<double> RealisticArmor_FrontField;
-		Nullable<double> RealisticArmor_BackField;
+		ValueableVector<RealisticArmorType*> RealisticArmor_HullTypesFSB;
+		ValueableVector<int> RealisticArmor_HullValuesFSB;
+		ValueableVector<RealisticArmorType*> RealisticArmor_TurretTypesFSB;
+		ValueableVector<int> RealisticArmor_TurretValuesFSB;
+		ValueableVector<double> RealisticArmor_HullField;
+		ValueableVector<double> RealisticArmor_TurretField;
+		ValueableVector<double> RealisticArmor_HitWhereProbabilityFSB;
+		//Enable Micro Probability Hit
+		Valueable<bool> RealisticArmor_EnableMicroProbabilityHit;
+		ValueableVector<double> RealisticArmor_HullHitProbabilityFSB;
+		ValueableVector<double> RealisticArmor_HullThresholdValuesFSB;
+		ValueableVector<double> RealisticArmor_TurretHitProbabilityFSB;
+		ValueableVector<double> RealisticArmor_TurretThresholdValuesFSB;
 
 		Valueable<int> Power;
 
@@ -595,14 +601,18 @@ public:
 			, DirectionalArmor_BackField {}
 
 			, RealisticArmor {}
-			, RealisticArmor_FrontType {}
-			, RealisticArmor_SideType {}
-			, RealisticArmor_BackType {}
-			, RealisticArmor_FrontValue {}
-			, RealisticArmor_SideValue {}
-			, RealisticArmor_BackValue {}
-			, RealisticArmor_FrontField {}
-			, RealisticArmor_BackField {}
+			, RealisticArmor_HullTypesFSB {}
+			, RealisticArmor_HullValuesFSB {}
+			, RealisticArmor_TurretTypesFSB {}
+			, RealisticArmor_TurretValuesFSB {}
+			, RealisticArmor_HullField {}
+			, RealisticArmor_TurretField {}
+			, RealisticArmor_HitWhereProbabilityFSB {}
+			, RealisticArmor_EnableMicroProbabilityHit { false }
+			, RealisticArmor_HullHitProbabilityFSB {}
+			, RealisticArmor_HullThresholdValuesFSB {}
+			, RealisticArmor_TurretHitProbabilityFSB {}
+			, RealisticArmor_TurretThresholdValuesFSB {}
 
 			, Power { }
 

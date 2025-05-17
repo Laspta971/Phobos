@@ -228,6 +228,12 @@ enum class DamageDisplayType
 	Intercept = 2
 };
 
+enum class HitPositionType
+{
+	Hull = 0,
+	Turret = 1
+};
+
 enum class ChronoSparkleDisplayPosition : unsigned char
 {
 	None = 0x0,

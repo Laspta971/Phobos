@@ -506,14 +506,18 @@ void TechnoTypeExt::ExtData::LoadFromINIFile(CCINIClass* const pINI)
 	this->DirectionalArmor_BackField.Read(exINI, pSection, "DirectionalArmor.BackField");
 
 	this->RealisticArmor.Read(exINI, pSection, "RealisticArmor");
-	this->RealisticArmor_FrontType.Read(exINI, pSection, "RealisticArmor.FrontType");
-	this->RealisticArmor_SideType.Read(exINI, pSection, "RealisticArmor.SideType");
-	this->RealisticArmor_BackType.Read(exINI, pSection, "RealisticArmor.BackType");
-	this->RealisticArmor_FrontValue.Read(exINI, pSection, "RealisticArmor.FrontValue");
-	this->RealisticArmor_SideValue.Read(exINI, pSection, "RealisticArmor.SideValue");
-	this->RealisticArmor_BackValue.Read(exINI, pSection, "RealisticArmor.BackValue");
-	this->RealisticArmor_FrontField.Read(exINI, pSection, "RealisticArmor.FrontField");
-	this->RealisticArmor_BackField.Read(exINI, pSection, "RealisticArmor.BackField");
+	this->RealisticArmor_HullTypesFSB.Read(exINI, pSection, "RealisticArmor.HullTypesFSB");
+	this->RealisticArmor_HullValuesFSB.Read(exINI, pSection, "RealisticArmor.HullValuesFSB");
+	this->RealisticArmor_TurretTypesFSB.Read(exINI, pSection, "RealisticArmor.TurretTypesFSB");
+	this->RealisticArmor_TurretValuesFSB.Read(exINI, pSection, "RealisticArmor.TurretValuesFSB");
+	this->RealisticArmor_HullField.Read(exINI, pSection, "RealisticArmor.HullField");
+	this->RealisticArmor_TurretField.Read(exINI, pSection, "RealisticArmor.TurretField");
+	this->RealisticArmor_HitWhereProbabilityFSB.Read(exINI, pSection, "RealisticArmor.HitWhereProbabilityFSB");
+	this->RealisticArmor_EnableMicroProbabilityHit.Read(exINI, pSection, "RealisticArmor.EnableMicroProbabilityHit");
+	this->RealisticArmor_HullHitProbabilityFSB.Read(exINI, pSection, "RealisticArmor.HullHitProbabilityFSB");
+	this->RealisticArmor_HullThresholdValuesFSB.Read(exINI, pSection, "RealisticArmor.HullThresholdValuesFSB");
+	this->RealisticArmor_TurretHitProbabilityFSB.Read(exINI, pSection, "RealisticArmor.TurretHitProbabilityFSB");
+	this->RealisticArmor_TurretThresholdValuesFSB.Read(exINI, pSection, "RealisticArmor.TurretThresholdValuesFSB");
 
 	this->Power.Read(exINI, pSection, "Power");
 
@@ -968,14 +972,18 @@ void TechnoTypeExt::ExtData::Serialize(T& Stm)
 		.Process(this->DirectionalArmor_BackField)
 
 		.Process(this->RealisticArmor)
-		.Process(this->RealisticArmor_FrontType)
-		.Process(this->RealisticArmor_SideType)
-		.Process(this->RealisticArmor_BackType)
-		.Process(this->RealisticArmor_FrontValue)
-		.Process(this->RealisticArmor_SideValue)
-		.Process(this->RealisticArmor_BackValue)
-		.Process(this->RealisticArmor_FrontField)
-		.Process(this->RealisticArmor_BackField)
+		.Process(this->RealisticArmor_HullTypesFSB)
+		.Process(this->RealisticArmor_HullValuesFSB)
+		.Process(this->RealisticArmor_TurretTypesFSB)
+		.Process(this->RealisticArmor_TurretValuesFSB)
+		.Process(this->RealisticArmor_HullField)
+		.Process(this->RealisticArmor_TurretField)
+		.Process(this->RealisticArmor_HitWhereProbabilityFSB)
+		.Process(this->RealisticArmor_EnableMicroProbabilityHit)
+		.Process(this->RealisticArmor_HullHitProbabilityFSB)
+		.Process(this->RealisticArmor_HullThresholdValuesFSB)
+		.Process(this->RealisticArmor_TurretHitProbabilityFSB)
+		.Process(this->RealisticArmor_TurretThresholdValuesFSB)
 
 		.Process(this->Power)
 

@@ -7,6 +7,7 @@
 #include <Ext/WeaponType/Body.h>
 #include <Ext/TEvent/Body.h>
 #include <Ext/House/Body.h>
+#include <random>
 
 namespace ReceiveDamageTemp
 {
@@ -40,52 +41,104 @@ DEFINE_HOOK(0x701900, TechnoClass_ReceiveDamage_Shield, 0x6)
 		else
 			multiplier = pWHExt->DamageOwnerMultiplier.Get(pRules->DamageOwnerMultiplier);
 
+		//Realistic Armor
 		if (pTypeExt->RealisticArmor && pThis->WhatAmI() == AbstractType::Unit && WarheadTypeExt::HitDirection >= 0 && args->DistanceToEpicenter <= 64 && pWHExt->RealisticArmor_Penetration >= 0.0)
 		{
-			const int tarFacing = pThis->PrimaryFacing.Current().GetValue<16>();
-			const int angle = abs(WarheadTypeExt::HitDirection - tarFacing);
-			const int frontField = static_cast<int>(16384 * pTypeExt->RealisticArmor_FrontField);
-			const int backField = static_cast<int>(16384 * pTypeExt->RealisticArmor_BackField);
-
 			int armorIndex;
 			double armorValue = 0;
 			double armorMultiplier = 1.0;
-			
+
+			std::mt19937 seedA(time(nullptr));
+			std::uniform_real_distribution<double> u(0.0, 1.0);
+			double rand = u(seedA);
+
+			//indicate hit front(0) or side(1) or back(2)
+			int hitDir;
+			bool hitTurret;
+
+			//pThis->TurretFacing.Current();
+			int tarFacing = pThis->PrimaryFacing.Current().GetValue<16>();
+			int angle = abs(WarheadTypeExt::HitDirection - tarFacing);
+			int frontField = static_cast<int>(16384 * pTypeExt->RealisticArmor_HullField[0]);
+			int backField = static_cast<int>(16384 * pTypeExt->RealisticArmor_HullField[1]);
+
 			if (angle >= 32768 - frontField && angle <= 32768 + frontField)
 			{
-				//查找装甲类型是否在弹头定义内
-				//如果存在，找到装甲对应的防御系数，否则取默认值1.0
-				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
-				{
-					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_FrontType);
-					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
-				}
-				//装甲值 = 纸面值 * 防御系数
-				armorValue = pTypeExt->RealisticArmor_FrontValue * armorMultiplier;
+				hitTurret = rand > pTypeExt->RealisticArmor_HitWhereProbabilityFSB[0];
+				hitDir = 0;
 			}
 			else if ((angle < backField && angle >= 0) || (angle > 49152 + backField && angle <= 65536))
 			{
-				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
-				{
-					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_BackType);
-					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
-				}
-				armorValue = pTypeExt->RealisticArmor_BackValue * armorMultiplier;
+				hitTurret = rand > pTypeExt->RealisticArmor_HitWhereProbabilityFSB[1];
+				hitDir = 2;
 			}
 			else
 			{
-				if (pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
-				{
-					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_SideType);
-					armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
-				}
-				armorValue = pTypeExt->RealisticArmor_SideValue * armorMultiplier;
+				hitTurret = rand > pTypeExt->RealisticArmor_HitWhereProbabilityFSB[2];
+				hitDir = 1;
 			}
+
+			if (!pThis->HasTurret())
+				hitTurret = false;
+
+			if (hitTurret)
+			{
+				tarFacing = pThis->TurretFacing().GetValue<16>();
+				angle = abs(WarheadTypeExt::HitDirection - tarFacing);
+				frontField = static_cast<int>(16384 * pTypeExt->RealisticArmor_TurretField[0]);
+				backField = static_cast<int>(16384 * pTypeExt->RealisticArmor_TurretField[1]);
+				if (angle >= 32768 - frontField && angle <= 32768 + frontField)
+					hitDir = 0;
+				else if ((angle < backField && angle >= 0) || (angle > 49152 + backField && angle <= 65536))
+					hitDir = 2;
+				else
+					hitDir = 1;
+			}
+
+			//查找装甲类型是否在弹头定义内
+			//如果存在，找到装甲对应的防御系数，否则取默认值1.0
+			if (pWHExt->RealisticArmor_Types.size() > 0 && pWHExt->RealisticArmor_Types.size() == pWHExt->RealisticArmor_Mulitiper.size())
+			{
+				if (hitTurret)
+					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_TurretTypesFSB[hitDir]);
+				else
+					armorIndex = pWHExt->RealisticArmor_Types.IndexOf(pTypeExt->RealisticArmor_HullTypesFSB[hitDir]);
+				armorMultiplier = armorIndex != -1 ? pWHExt->RealisticArmor_Mulitiper[armorIndex] : 1.0;
+			}
+
+			//是否启用微观命中概率
+			double hitPosition = 0.0;
+			if (pTypeExt->RealisticArmor_EnableMicroProbabilityHit)
+			{
+				std::random_device seedB;
+				hitPosition = u(seedB);
+				if (hitTurret)
+				{
+					armorValue = armorMultiplier * (hitPosition > pTypeExt->RealisticArmor_TurretHitProbabilityFSB[hitDir] ? pTypeExt->RealisticArmor_TurretThresholdValuesFSB[hitDir] : pTypeExt->RealisticArmor_TurretValuesFSB[hitDir]);
+				}
+				else
+				{
+					armorValue = armorMultiplier * (hitPosition > pTypeExt->RealisticArmor_HullHitProbabilityFSB[hitDir] ? pTypeExt->RealisticArmor_HullThresholdValuesFSB[hitDir] : pTypeExt->RealisticArmor_HullValuesFSB[hitDir]);
+				}
+			}
+			else
+			{
+				if (hitTurret)
+					armorValue = armorMultiplier * pTypeExt->RealisticArmor_TurretValuesFSB[hitDir];
+				else
+					armorValue = armorMultiplier * pTypeExt->RealisticArmor_HullValuesFSB[hitDir];
+			}
+			
 			if (pWHExt->RealisticArmor_Penetration < armorValue)
 			{
 				*args->Damage = 0;
+				ReceiveDamageTemp::SkipLowDamageCheck = true;
 			}
-			GeneralUtils::DisplayArmorBlockString(*args->Damage, pThis->GetRenderCoords(), TechnoExt::ExtMap.Find(pThis)->DamageNumberOffset);
+
+			if(hitTurret)
+				GeneralUtils::DisplayArmorBlockString(*args->Damage, HitPositionType::Turret, pThis->GetRenderCoords(), TechnoExt::ExtMap.Find(pThis)->DamageNumberOffset);
+			else
+				GeneralUtils::DisplayArmorBlockString(*args->Damage, HitPositionType::Hull, pThis->GetRenderCoords(), TechnoExt::ExtMap.Find(pThis)->DamageNumberOffset);
 		}
 
 		if (pTypeExt->DirectionalArmor.Get(RulesExt::Global()->DirectionalArmor) && pThis->WhatAmI() == AbstractType::Unit && WarheadTypeExt::HitDirection >= 0 && args->DistanceToEpicenter <= 64)

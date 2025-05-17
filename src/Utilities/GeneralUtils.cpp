@@ -181,7 +181,7 @@ CoordStruct GeneralUtils::CalculateCoordsFromDistance(CoordStruct currentCoords,
 	return CoordStruct { x, y, targetCoords.Z };
 }
 
-void GeneralUtils::DisplayArmorBlockString(int damage, CoordStruct coords, int& offset)
+void GeneralUtils::DisplayArmorBlockString(int damage, HitPositionType type, CoordStruct coords, int& offset)
 {
 
 	ColorStruct color;
@@ -190,19 +190,31 @@ void GeneralUtils::DisplayArmorBlockString(int damage, CoordStruct coords, int& 
 
 	int width = 0, height = 0;
 	wchar_t damageStr[0x20];
-	if (damage > 0)
-		swprintf_s(damageStr, L"%s", L"Penetrated");
-	else
-		swprintf_s(damageStr, L"%s", L"Blocked");
+	switch(type)
+	{
+	case HitPositionType::Hull:
+		damage > 0 ? swprintf_s(damageStr, L"%s", L"Hull Penetrated") : swprintf_s(damageStr, L"%s", L"Hull Blocked");
+		break;
+	case HitPositionType::Turret:
+		damage > 0 ? swprintf_s(damageStr, L"%s", L"Turret Penetrated") : swprintf_s(damageStr, L"%s", L"Turret Blocked");
+		break;
+	default:
+		break;
+	}
 
 	BitFont::Instance->GetTextDimension(damageStr, &width, &height, 120);
 
-	if (damage > 0)
-		FlyingStrings::Add(damageStr, coords, color, Point2D { -30, 0 });
-	else
-		FlyingStrings::Add(damageStr, coords, color, Point2D { -20, 0 });
-	
-
+	switch (type)
+	{
+	case HitPositionType::Hull:
+		damage > 0 ? FlyingStrings::Add(damageStr, coords, color, Point2D { -45, 0 }) : FlyingStrings::Add(damageStr, coords, color, Point2D { -38, 0 });
+		break;
+	case HitPositionType::Turret:
+		damage > 0 ? FlyingStrings::Add(damageStr, coords, color, Point2D { -52, 0 }) : FlyingStrings::Add(damageStr, coords, color, Point2D { -45, 0 });
+		break;
+	default:
+		break;
+	}
 }
 
 void GeneralUtils::DisplayDamageNumberString(int damage, DamageDisplayType type, CoordStruct coords, int& offset)
